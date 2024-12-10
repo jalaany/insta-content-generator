@@ -28,15 +28,29 @@ app.secret_key = os.urandom(24)
 
 # ============= تكوين API =============
 # OpenAI
+def init_api_keys():
+    openai_key = os.getenv('OPENAI_API_KEY')
+    google_key = os.getenv('GOOGLE_API_KEY')
+    
+    if not openai_key:
+        print("Warning: OPENAI_API_KEY not found in environment variables")
+    if not google_key:
+        print("Warning: GOOGLE_API_KEY not found in environment variables")
+        
+    return openai_key, google_key
+
+# تهيئة المفاتيح عند بدء التطبيق
+openai_api_key, google_api_key = init_api_keys()
+
 client = OpenAI(
-    api_key=os.getenv('OPENAI_API_KEY'),
+    api_key=openai_api_key,
     base_url="https://api.openai.com/v1"
 )
 
 # Gemini
-api_key = os.getenv('GOOGLE_API_KEY')
+api_key = google_api_key
 if not api_key:
-    print("تحذير: لم يتم العثور على مفتاح Google API", file=sys.stderr)
+    print("Warning: GOOGLE_API_KEY not found in environment variables")
 
 try:
     genai.configure(api_key=api_key)
@@ -1247,5 +1261,22 @@ content_scheduler = ContentScheduler()
 content_analytics = ContentAnalytics()
 smart_optimizer = SmartOptimizer()
 
+@app.route('/health')
+def health_check():
+    """
+    نقطة نهاية للتحقق من صحة التطبيق
+    تستخدم للتأكد من أن التطبيق يعمل بشكل صحيح
+    """
+    status = {
+        'status': 'healthy',
+        'timestamp': datetime.now().isoformat(),
+        'api_keys': {
+            'openai': bool(openai_api_key),
+            'google': bool(google_api_key)
+        }
+    }
+    return jsonify(status)
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port)
