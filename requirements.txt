@@ -8,3 +8,4 @@ huggingface_hub==0.19.4
 stability-sdk==0.8.5
 openai==1.57.1
 gunicorn==21.2.0
+pytz==2023.3
