@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مولد محتوى السوشيال ميديا</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #6c63ff;
+            --secondary-color: #4CAF50;
+            --background-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --card-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            --border-radius: 15px;
+            --spacing: 20px;
+        }
+        
+        body {
+            background: var(--background-gradient);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            padding: var(--spacing);
+        }
+        
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            background: rgba(255, 255, 255, 0.95);
+            margin-bottom: var(--spacing);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(108, 99, 255, 0.25);
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: #5a52d5;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: var(--secondary-color);
+            border: none;
+        }
+        
+        .btn-success:hover {
+            background: #3d8b40;
+            transform: translateY(-2px);
+        }
+        
+        .preview-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .preview-section h6 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .loading {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .connection-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-right: 10px;
+        }
+        
+        .connection-status::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+        
+        .connection-status.online::before {
+            background-color: #4CAF50;
+        }
+        
+        .connection-status.offline::before {
+            background-color: #c62828;
+        }
+        
+        .theme-switch {
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+        
+        .theme-switch:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+        
+        .alert {
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing);
+        }
+        
+        .modal-content {
+            border-radius: var(--border-radius);
+            border: none;
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid #eee;
+            padding: 1.5rem;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid #eee;
+            padding: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-stars me-2"></i>
+                مولد محتوى السوشيال ميديا
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="theme-switch ms-3" onclick="toggleTheme()">
+                    <i class="bi bi-moon"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-4">
+        <!-- Content Generation Section -->
+        <div class="row">
+            <!-- Form Column -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-pencil-square me-2"></i>إنشاء محتوى جديد
+                        </h5>
+                        <div id="error-alert" class="alert alert-danger d-none" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <span id="error-message"></span>
+                        </div>
+                        <form id="contentForm">
+                            <div class="mb-3">
+                                <label for="contentType" class="form-label">نوع المحتوى</label>
+                                <select class="form-select" id="contentType">
+                                    <option value="tips">نصائح ومعلومات</option>
+                                    <option value="story">قصة قصيرة</option>
+                                    <option value="tutorial">شرح تعليمي</option>
+                                    <option value="contest">مسابقة</option>
+                                    <option value="promotion">عرض ترويجي</option>
+                                    <option value="live">بث مباشر</option>
+                                    <option value="marketing">محتوى تسويقي</option>
+                                    <option value="edu_marketing">تسويق تعليمي</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="topic" class="form-label">الموضوع</label>
+                                <input type="text" class="form-control" id="topic" placeholder="أدخل موضوع المحتوى">
+                            </div>
+                            <div class="mb-3">
+                                <label for="tone" class="form-label">نبرة المحتوى</label>
+                                <select class="form-select" id="tone">
+                                    <option value="professional">احترافية</option>
+                                    <option value="casual">عادية</option>
+                                    <option value="friendly">ودية</option>
+                                    <option value="humorous">مرحة</option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-primary w-100" onclick="generateContent()">
+                                <i class="bi bi-magic me-2"></i>إنشاء المحتوى
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Scheduling Section -->
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-calendar me-2"></i>جدولة المحتوى
+                        </h5>
+                        <div class="mb-3">
+                            <label for="scheduleDate" class="form-label">تاريخ النشر</label>
+                            <input type="datetime-local" class="form-control" id="scheduleDate">
+                        </div>
+                        <button type="button" class="btn btn-success w-100" onclick="scheduleContent()">
+                            <i class="bi bi-clock me-2"></i>جدولة المحتوى
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Analytics Section -->
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-graph-up me-2"></i>التحليلات والتوصيات
+                        </h5>
+                        
+                        <!-- Best Posting Times -->
+                        <div class="mb-4">
+                            <h6 class="card-subtitle mb-3">
+                                <i class="bi bi-clock me-2"></i>أفضل أوقات النشر
+                            </h6>
+                            <div id="best-times-container">
+                                <div class="text-center">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">جاري التحميل...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Best Posts and Recommendations -->
+                        <div class="mb-4">
+                            <h6 class="card-subtitle mb-3">
+                                <i class="bi bi-star me-2"></i>أفضل المنشورات والتوصيات
+                            </h6>
+                            <div id="best-posts-container">
+                                <div class="text-center">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">جاري التحميل...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="btn btn-primary w-100" onclick="refreshAnalytics()">
+                            <i class="bi bi-arrow-clockwise me-2"></i>تحديث التحليلات
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview Column -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-eye me-2"></i>معاينة المحتوى
+                        </h5>
+                        <div class="preview-section mb-4">
+                            <h6 class="card-subtitle mb-3">المحتوى المولد:</h6>
+                            <div id="generated-content" class="border p-3 rounded bg-light"></div>
+                        </div>
+                        <div class="preview-section mb-4">
+                            <h6 class="card-subtitle mb-3">وصف الصورة المقترح:</h6>
+                            <p id="image-prompt" class="mb-0"></p>
+                        </div>
+                        <div class="preview-section mb-4">
+                            <h6 class="card-subtitle mb-3">الهاشتاغات المقترحة:</h6>
+                            <div id="hashtags-container" class="d-flex flex-wrap gap-2">
+                                <!-- سيتم إضافة الهاشتاغات هنا -->
+                            </div>
+                        </div>
+                        <div class="image-prompt-container p-3 bg-light rounded">
+                            <button class="btn btn-primary btn-sm" onclick="generateImage()" id="generate-image-btn">
+                                <i class="bi bi-image me-2"></i>
+                                توليد الصورة
+                            </button>
+                            <div id="image-loading" class="d-none mt-2">
+                                <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                    <span class="visually-hidden">جاري التوليد...</span>
+                                </div>
+                                <span class="ms-2">جاري توليد الصورة...</span>
+                            </div>
+                        </div>
+                        <div id="generated-image-container" class="mb-4 d-none">
+                            <h6 class="card-subtitle mb-3">الصورة المولدة:</h6>
+                            <div class="position-relative">
+                                <img id="generated-image" src="" class="img-fluid rounded" alt="الصورة المولدة">
+                                <button class="btn btn-sm btn-primary position-absolute top-0 end-0 m-2" onclick="downloadImage()">
+                                    <i class="bi bi-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="previewContent" class="d-none">
+                            <div class="preview-section">
+                                <h6>
+                                    <i class="bi bi-chat-square-text me-2"></i>
+                                    النص
+                                </h6>
+                                <div id="captionPreview" class="border p-3 rounded"></div>
+                            </div>
+                            <div class="preview-section">
+                                <h6>
+                                    <i class="bi bi-megaphone me-2"></i>
+                                    دعوة للتفاعل
+                                </h6>
+                                <div id="callToActionPreview" class="border p-3 rounded"></div>
+                            </div>
+                            <div class="preview-section">
+                                <h6>
+                                    <i class="bi bi-hash me-2"></i>
+                                    الهاشتاغات
+                                </h6>
+                                <div id="hashtagsPreview" class="border p-3 rounded"></div>
+                            </div>
+                            <button id="postToInstagram" class="btn btn-success w-100">
+                                <i class="bi bi-instagram me-2"></i>
+                                نشر على انستغرام
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Optimization Tools -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-lightning me-2"></i>أدوات التحسين
+                </h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">الهاشتاغات الرائجة</label>
+                            <div id="trendingHashtags" class="preview-section"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">تحسين النص</label>
+                            <textarea class="form-control" id="textToOptimize" rows="3" placeholder="أدخل النص لتحسينه"></textarea>
+                            <button type="button" class="btn btn-primary mt-2" onclick="optimizeText()">
+                                <i class="bi bi-stars me-2"></i>تحسين النص
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Content -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-calendar-check me-2"></i>المحتوى القادم
+                </h5>
+                <div id="upcomingContent"></div>
+            </div>
+        </div>
+
+        <!-- History Section -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-clock-history me-2"></i>
+                    سجل المحتوى السابق
+                </h5>
+                <div id="history-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        let contentHistory = [];
+        let currentContent = null;
+        
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('dark-theme');
+            
+            const themeButton = document.querySelector('.theme-switch i');
+            if (body.classList.contains('dark-theme')) {
+                themeButton.className = 'bi bi-sun';
+            } else {
+                themeButton.className = 'bi bi-moon';
+            }
+        }
+
+        function loadPreferences() {
+            const savedPreferences = localStorage.getItem('content_preferences');
+            if (savedPreferences) {
+                const preferences = JSON.parse(savedPreferences);
+                const elements = {
+                    'topic': document.getElementById('topic'),
+                    'tone': document.getElementById('tone'),
+                    'contentType': document.getElementById('contentType')
+                };
+
+                // التحقق من وجود كل عنصر قبل تعيين قيمته
+                for (const [key, element] of Object.entries(elements)) {
+                    if (element && preferences[key]) {
+                        element.value = preferences[key];
+                    }
+                }
+            }
+        }
+
+        function showError(message) {
+            const errorAlert = document.getElementById('error-alert');
+            const errorMessage = document.getElementById('error-message');
+            if (errorAlert && errorMessage) {
+                errorMessage.textContent = message;
+                errorAlert.classList.remove('d-none');
+                setTimeout(() => {
+                    errorAlert.classList.add('d-none');
+                }, 5000);
+            }
+        }
+
+        function generateContent() {
+            const elements = {
+                topic: document.getElementById('topic'),
+                tone: document.getElementById('tone'),
+                contentType: document.getElementById('contentType'),
+                generatedContent: document.getElementById('generated-content'),
+                imagePrompt: document.getElementById('image-prompt'),
+                generateImageBtn: document.getElementById('generate-image-btn')
+            };
+
+            // التحقق من وجود جميع العناصر المطلوبة
+            for (const [key, element] of Object.entries(elements)) {
+                if (!element) {
+                    console.error(`عنصر ${key} غير موجود`);
+                    showError('حدث خطأ في تحميل الصفحة. يرجى تحديث الصفحة والمحاولة مرة أخرى.');
+                    return;
+                }
+            }
+
+            const data = {
+                topic: elements.topic.value.trim(),
+                tone: elements.tone.value,
+                content_type: elements.contentType.value
+            };
+
+            // التحقق من إدخال البيانات المطلوبة
+            if (!data.topic) {
+                showError('الرجاء إدخال الموضوع');
+                elements.topic.focus();
+                return;
+            }
+
+            // تعطيل زر توليد الصورة حتى اكتمال توليد المحتوى
+            elements.generateImageBtn.disabled = true;
+
+            // إظهار مؤشر التحميل
+            elements.generatedContent.innerHTML = '<div class="text-center"><div class="loading-spinner mx-auto"></div><p class="mt-3">جاري توليد المحتوى...</p></div>';
+            elements.imagePrompt.innerText = '';
+
+            fetch('/generate_content', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        throw new Error(data.message || 'حدث خطأ أثناء توليد المحتوى');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    // تحديث المحتوى المولد مع الحفاظ على تنسيق النص
+                    elements.generatedContent.innerHTML = data.content.replace(/\n/g, '<br>');
+                    
+                    // تحديث وصف الصورة إذا كان موجوداً
+                    if (data.image_prompt) {
+                        elements.imagePrompt.innerText = data.image_prompt;
+                        elements.generateImageBtn.disabled = false;
+                    } else {
+                        elements.imagePrompt.innerText = 'لم يتم توليد وصف للصورة';
+                        elements.generateImageBtn.disabled = true;
+                    }
+                } else {
+                    throw new Error(data.message || 'حدث خطأ غير معروف');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                elements.generatedContent.innerHTML = '';
+                elements.imagePrompt.innerText = '';
+                elements.generateImageBtn.disabled = true;
+                showError(error.message || 'حدث خطأ أثناء توليد المحتوى');
+            });
+        }
+
+        function loadUpcomingContent() {
+            fetch('/get_upcoming?days=7')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success' && Array.isArray(data.upcoming)) {
+                    const upcomingDiv = document.getElementById('upcomingContent');
+                    if (!upcomingDiv) {
+                        console.error('عنصر upcomingContent غير موجود');
+                        return;
+                    }
+                    
+                    upcomingDiv.innerHTML = '';
+                    
+                    data.upcoming.forEach(item => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'preview-section mb-3';
+                        itemDiv.innerHTML = `
+                            <div class="d-flex justify-content-between align-items-center">
+                                <strong>${new Date(item.date).toLocaleString('ar-SA')}</strong>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteScheduledContent('${item.id}')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                            <div class="mt-2">${item.content}</div>
+                        `;
+                        upcomingDiv.appendChild(itemDiv);
+                    });
+                } else {
+                    console.error('البيانات غير صحيحة:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function refreshAnalytics() {
+            // تحديث أفضل أوقات النشر
+            fetch('/get_best_times')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('best-times-container');
+                    if (data.status === 'success') {
+                        let html = '<div class="row">';
+                        for (const [period, info] of Object.entries(data.data)) {
+                            html += `
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6 class="card-title">${period === 'morning' ? 'الصباح' : period === 'afternoon' ? 'الظهيرة' : 'المساء'}</h6>
+                                            <p class="card-text">
+                                                <i class="bi bi-clock me-2"></i>${info.time}
+                                            </p>
+                                            <p class="card-text small text-muted">${info.description}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        html += '</div>';
+                        container.innerHTML = html;
+                    } else {
+                        container.innerHTML = '<div class="alert alert-info">لا تتوفر بيانات عن أفضل أوقات النشر حالياً</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('best-times-container').innerHTML = 
+                        '<div class="alert alert-danger">حدث خطأ في تحميل البيانات</div>';
+                });
+
+            // تحديث أفضل المنشورات والتوصيات
+            fetch('/get_best_posts')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('best-posts-container');
+                    if (data.status === 'success') {
+                        let html = '<div class="row">';
+                        
+                        // عرض التوصيات
+                        data.data.recommendations.forEach(rec => {
+                            html += `
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6 class="card-title">${rec.title}</h6>
+                                            <p class="card-text small">${rec.description}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        html += '</div>';
+                        
+                        // عرض الهاشتاغات المقترحة
+                        if (data.data.hashtags && data.data.hashtags.length > 0) {
+                            html += `
+                                <div class="mt-3">
+                                    <h6 class="mb-2">الهاشتاغات المقترحة:</h6>
+                                    <div class="hashtag-container">
+                                        ${data.data.hashtags.map(tag => `
+                                            <span class="badge bg-primary me-2 mb-2" style="cursor: pointer" onclick="appendHashtag('${tag}')">
+                                                #${tag}
+                                            </span>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        
+                        container.innerHTML = html;
+                    } else {
+                        container.innerHTML = '<div class="alert alert-info">لا تتوفر بيانات عن أفضل المنشورات حالياً</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('best-posts-container').innerHTML = 
+                        '<div class="alert alert-danger">حدث خطأ في تحميل البيانات</div>';
+                });
+        }
+
+        function appendHashtag(tag) {
+            const contentArea = document.getElementById('generated-content');
+            if (contentArea) {
+                const currentContent = contentArea.innerHTML;
+                contentArea.innerHTML = currentContent + ' ' + tag;
+            }
+        }
+
+        function loadTrendingHashtags() {
+            const hashtagsContainer = document.getElementById('hashtags-container');
+            if (!hashtagsContainer) return;
+
+            hashtagsContainer.innerHTML = '<div class="text-center w-100"><div class="loading-spinner mx-auto"></div></div>';
+
+            fetch('/get_trending_hashtags')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success' && Array.isArray(data.trending_hashtags)) {
+                        hashtagsContainer.innerHTML = '';
+                        data.trending_hashtags.forEach(hashtag => {
+                            const badge = document.createElement('span');
+                            badge.className = 'badge bg-primary me-2 mb-2';
+                            badge.style.cursor = 'pointer';
+                            badge.textContent = hashtag;
+                            badge.onclick = () => appendHashtag(hashtag);
+                            hashtagsContainer.appendChild(badge);
+                        });
+                    } else {
+                        throw new Error('بيانات غير صالحة');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    hashtagsContainer.innerHTML = '<div class="alert alert-warning">حدث خطأ في تحميل الهاشتاغات</div>';
+                });
+        }
+
+        // تحميل البيانات عند بدء التطبيق
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTrendingHashtags();
+            loadUpcomingContent();
+            refreshAnalytics();
+        });
+    </script>
+</body>
+</html>
