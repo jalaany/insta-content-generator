@@ -19,6 +19,7 @@ import calendar
 import pytz
 import re
 from collections import defaultdict
+from analytics import CompetitorAnalyzer, ContentPlanner, ImageAnalyzer, AudienceAnalyzer
 
 # ============= تهيئة التطبيق =============
 load_dotenv()
@@ -94,13 +95,87 @@ CONTENT_TEMPLATES = {
     #[هاشتاغات_مناسبة]
     """,
     'story': """
-    📖 [عنوان القصة]
+    📱 قصة انستغرام
     
-    [محتوى القصة]
+    🎯 الموضوع:
+    [موضوع القصة]
     
-    ✨ [خاتمة مؤثرة]
+    📸 نوع المحتوى:
+    ▫️ [صورة/فيديو/استطلاع/سؤال]
+    
+    💫 العناصر التفاعلية:
+    ▫️ [ملصقات/استطلاع/سؤال/موسيقى]
+    
+    ⏰ مدة العرض:
+    [24 ساعة/قصص مميزة]
     
     #[هاشتاغات_مناسبة]
+    """,
+    'reel': """
+    🎬 فكرة ريلز
+    
+    📝 العنوان:
+    [عنوان جذاب للريلز]
+    
+    🎯 الهدف:
+    [تعليمي/ترفيهي/تسويقي]
+    
+    ⏱ المدة المقترحة:
+    [15-30-60 ثانية]
+    
+    📋 السيناريو:
+    1️⃣ [المشهد الأول]
+    2️⃣ [المشهد الثاني]
+    3️⃣ [المشهد الثالث]
+    
+    🎵 الموسيقى المقترحة:
+    [اسم المقطع الصوتي]
+    
+    💡 نصائح التصوير:
+    [نصائح خاصة بالتصوير]
+    
+    #[هاشتاغات_ريلز] #[هاشتاغات_إضافية]
+    """,
+    'carousel': """
+    🎠 منشور متعدد الصور
+    
+    📝 العنوان الرئيسي:
+    [عنوان جذاب]
+    
+    🎯 عدد الصور: [3-10]
+    
+    📸 محتوى كل صورة:
+    1️⃣ [وصف الصورة الأولى]
+    2️⃣ [وصف الصورة الثانية]
+    3️⃣ [وصف الصورة الثالثة]
+    
+    ✍️ النص المصاحب:
+    [نص تفصيلي يشرح المحتوى]
+    
+    💡 نصيحة للتصميم:
+    [نصائح لتصميم الصور]
+    
+    #[هاشتاغات_مناسبة]
+    """,
+    'seasonal': """
+    🎉 محتوى موسمي
+    
+    🗓 المناسبة:
+    [رمضان/العيد/موسم معين]
+    
+    📝 العنوان:
+    [عنوان مناسب للمناسبة]
+    
+    💫 المحتوى:
+    [محتوى مخصص للمناسبة]
+    
+    🎁 العروض الخاصة:
+    [عروض خاصة بالمناسبة]
+    
+    🕌 دعاء/تهنئة:
+    [دعاء أو تهنئة مناسبة]
+    
+    #[هاشتاغات_المناسبة] #[هاشتاغات_إضافية]
     """,
     'tutorial': """
     📚 [عنوان الدرس]
@@ -1260,6 +1335,75 @@ class SmartOptimizer:
 content_scheduler = ContentScheduler()
 content_analytics = ContentAnalytics()
 smart_optimizer = SmartOptimizer()
+
+# ============= تحليلات المنافس =============
+competitor_analyzer = CompetitorAnalyzer()
+content_planner = ContentPlanner()
+image_analyzer = ImageAnalyzer()
+audience_analyzer = AudienceAnalyzer()
+
+@app.route('/analyze_competitor', methods=['POST'])
+def analyze_competitor():
+    """تحليل المنافس"""
+    try:
+        data = request.get_json()
+        username = data.get('username')
+        if not username:
+            return jsonify({'error': 'يجب تحديد اسم المستخدم'}), 400
+            
+        analysis = competitor_analyzer.analyze_competitor(username)
+        return jsonify({'analysis': analysis})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/generate_monthly_plan', methods=['POST'])
+def generate_monthly_plan():
+    """إنشاء خطة محتوى شهرية"""
+    try:
+        data = request.get_json()
+        month = data.get('month')
+        year = data.get('year')
+        business_type = data.get('business_type')
+        
+        if not all([month, year, business_type]):
+            return jsonify({'error': 'جميع الحقول مطلوبة'}), 400
+            
+        plan = content_planner.generate_monthly_plan(month, year, business_type)
+        return jsonify({'plan': plan})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/analyze_image', methods=['POST'])
+def analyze_image():
+    """تحليل الصورة"""
+    try:
+        data = request.get_json()
+        image_url = data.get('image_url')
+        
+        if not image_url:
+            return jsonify({'error': 'يجب تحديد رابط الصورة'}), 400
+            
+        analysis = image_analyzer.analyze_image(image_url)
+        return jsonify({'analysis': analysis})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/analyze_engagement', methods=['POST'])
+def analyze_engagement():
+    """تحليل تفاعل الجمهور"""
+    try:
+        data = request.get_json()
+        post_data = {
+            'content': data.get('content'),
+            'comments': data.get('comments', []),
+            'likes': data.get('likes', 0),
+            'shares': data.get('shares', 0)
+        }
+        
+        analysis = audience_analyzer.analyze_engagement(post_data)
+        return jsonify({'analysis': analysis})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/health')
 def health_check():
