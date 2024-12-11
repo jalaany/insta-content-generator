@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configure API key
-api_key = "AIzaSyBcx7vXS-moZq4XnG6UB2FjwA-WkrDUjI8"
+api_key = ""
 genai.configure(api_key=api_key)
 
 try:
